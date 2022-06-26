@@ -1,17 +1,36 @@
 ### Underground Nexus - Athena0
-> Kali Linux Bleeding Edge Respository, v0.8.0
+> Kali Linux Bleeding Edge Respository, v0.8.5
 
-Script to build the necessary Dockerfile
+### Information
+
+This is single component of the entire Underground Nexus. Kali Linux Bleeding Repository is built from scratch with using `kalilinux/kali-bleeding-edge:amd64` as the base image. This newly built Docker image has Wireshark, NMap, Metasploit Framework, and radare2 for your use.
+
+To get started with Underground Nexus, you will need to already have built the Underground Nexus. There is a script already in place to pull the necessary Docker image and run within the dockerized environment.
+
+I use a script on my PC to build out the Docker images. If you would like to build something similar to mine, you can use this script below.
 ```bash
 VERSION=$(git log -1 --pretty=%h)
-REPO="registry.gitlab.com/cyberphxv/nexus-athena0:"
+REPO="registry.gitlab.com/<USERNAME>/nexus-athena0:"
 TAG="$REPO$VERSION"
 LATEST="${REPO}latest"
 BUILD_TIMESTAMP=$( date '+%F_%H:%M:%S' )
-docker buildx build -t "$TAG" -t "$LATEST" --build-arg VERSION="$VERSION" --build-arg BUILD_TIMESTAMP="$BUILD_TIMESTAMP" . --push
+
+docker buildx build -t "$TAG" -t "$LATEST" --build-arg VERSION="$VERSION" --build-arg BUILD_TIMESTAMP="$BUILD_TIMESTAMP" . --no-cache --pull --push
+
 # docker push "$TAG" 
 # docker push "$LATEST"
 ```
+
+So to the best of my ability, I have multiple Github Actions running to deploy separate Docker images to two different container registries:
+
+1. GitLab Container Registry
+2. GitHub Container Registry
+
+There is also a GitHub Action to run `trivy` to scan the built Docker image and upload the `SARIF` results to GitHub Security Scanning Alerts.
+
+### Cosign usage
+
+To get started with using Cosign, see below.
 
 Generate GitLab key-pair with Cosign. You will need to create a GITLAB_TOKEN from GitLab.
 
@@ -39,7 +58,8 @@ cosign sign -a "repo=https://gitlab.com/cyberphxv/nexus-athena0" \
 Pushing signature to: registry.gitlab.com/cyberphxv/nexus-athena0
 ```
 
-Verify signed image with Cosign
+Verify signed image with `cosign`.
+
 ```bash
 cosign verify --key cosign.pub "$TAG" | jq .
 
@@ -92,7 +112,8 @@ The following checks were performed on each of these signatures:
 ]
 ```
 
-Use `crane`
+Use `crane` with `cosign`.
+
 ```bash
 crane manifest $(cosign triangulate "$TAG") | jq .
 {
@@ -132,7 +153,8 @@ crane manifest $(cosign triangulate "$TAG") | jq .
 }
 ```
 
-Use `syft` packge the newly built Docker image and then export it to `.spdx` file. Attach `sbom` to the docker image, and sign with your choice of `Cosign` key. Lastly verify the newly signed `sbom` with your Cosign public key.
+Use `syft` packge the newly built Docker image and then export it to `.spdx` file. Attach `sbom` to the docker image, and sign with your choice of `cosign` key. Lastly verify the newly signed `sbom` with your `cosign` public key.
+
 ```bash
 syft packages "$TAG" -o spdx > athena0-latest.spdx
 

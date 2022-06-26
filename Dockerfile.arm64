@@ -1,4 +1,4 @@
-FROM kalilinux/kali-bleeding-edge:amd64
+FROM kalilinux/kali-bleeding-edge:arm64
 
 ARG VERSION
 ENV VERSION $VERSION
@@ -11,8 +11,8 @@ VOLUME ["/var/run", "/var/lib/docker/volumes", "/nexus-bucket"]
 
 RUN apt-get update -y -qq && \
     DEBIAN_FRONTEND=nonintereactive apt-get install -y --no-install-recommends -qq \
-        gcc \
-        g++ \
+        gcc-aarch64-linux-gnu \
+        g++-aarch64-linux-gnu \
         build-essential \
         && apt-get clean \
         && rm -rf /var/lib/apt/lists/* 2> /dev/null
@@ -34,17 +34,17 @@ RUN apt-get update -y -qq && \
         && rm -rf /var/lib/apt/lists/* 2> /dev/null
 
 RUN git clone https://github.com/radareorg/radare2 && \
-    sh radare2/sys/install.sh
+    sh radare2/sys/install.sh 2> /dev/null
 
 RUN rm -rf radare2 2> /dev/null
 
-RUN wget -O terraform-amd64.zip https://releases.hashicorp.com/terraform/1.2.3/terraform_1.2.3_linux_amd64.zip && \
-    unzip terraform-amd64.zip && \
+RUN wget -O terraform-arm64.zip https://releases.hashicorp.com/terraform/1.2.3/terraform_1.2.3_linux_arm64.zip && \
+    unzip terraform-arm64.zip && \
     mv terraform usr/local/bin && \
     touch ~/.bashrc && \
     terraform -install-autocomplete
 
-RUN rm terraform-amd64.zip 2> /dev/null
+RUN rm terraform-arm64.zip 2> /dev/null
 
 EXPOSE 22/tcp
 

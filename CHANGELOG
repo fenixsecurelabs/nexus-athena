@@ -1,0 +1,13 @@
+version 0.8.5
+
+- (feat) Upgrade to v0.8.5
+- (feat) Generated sbom, Updated README, added more args for Dockerfile, and made changes to the GitHub Action workflow
+- Updating tagging for Kaniko build
+- Updated GitLab workflow, erroring on authenticating to the right GitLab Container Registry.
+- Updated trivy.yml to scan-with-trivy.yml
+- (feat) Update workflow for GitLab Container Registry to sign with Cosign generated key via GitLab
+- Added work for building a Docker image to publish to GitHub Container Registry
+- Update athena.yml
+- Create trivy.yml
+- Adding Github Action
+- Init
