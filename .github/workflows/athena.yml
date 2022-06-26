@@ -29,4 +29,4 @@ jobs:
           password: ${{ secrets.GL_REGISTRY_PASSWORD }}
           image: cyberphxv/nexus-athena0
           cache: true
-          cache_registry: aevea/cache
+          cache_registry: cyberphxv/nexus-athena0
