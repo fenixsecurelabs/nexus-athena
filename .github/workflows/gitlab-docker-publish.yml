@@ -1,0 +1,53 @@
+name: gl_publish_athena
+
+on:
+  push:
+    branches: 
+      - main
+
+env:
+  REGISTRY: registry.gitlab.com
+  IMAGE_NAME: nexus-athena0
+
+jobs:
+  gl_registry:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@master
+
+      - name: Install go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.18.3
+          check-latest: true
+
+      - name: Install cosign
+        if: github.event_name != 'pull_request'
+        uses: sigstore/cosign-installer@main
+        with:
+          cosign-release: main
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ secrets.GL_REGISTRY_USERNAME }}/${{ env.IMAGE_NAME }}
+          tags: ${{ steps.meta.outputs.tags }}
+
+      - name: Kaniko build
+        uses: aevea/action-kaniko@master
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.GL_REGISTRY_USERNAME }}
+          password: ${{ secrets.GL_REGISTRY_PASSWORD }}
+          image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          cache: true
+          cache_registry: ${{ env.REGISTRY }}/${{ secrets.GL_REGISTRY_USERNAME }}/${{ env.IMAGE_NAME }}
+
+      - name: Sign image with a key
+        if: ${{ github.event_name != 'pull_request' }}
+        run: |
+          cosign sign --key gitlab://${{ secrets.GL_REGISTRY_USERNAME }}/${{ env.IMAGE_NAME }} ${TAGS}
+        env:
+          TAGS: ${{ steps.meta.outputs.tags }}@${{ steps.build-and-push.outputs.digest }}
