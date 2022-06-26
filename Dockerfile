@@ -1,5 +1,10 @@
 FROM kalilinux/kali-bleeding-edge:latest
 
+ARG VERSION
+ENV VERSION $VERSION
+ARG BUILD_TIMESTAMP
+ENV BUILD_TIMESTAMP $BUILD_TIMESTAMP
+
 LABEL description="Custom Kali Linux Bleeding Edge repository Docker image configured with pre-installed packages such as Nmap, Wireshark, Metasploit Framework, and radare2."
 
 VOLUME ["/var/run", "/var/lib/docker/volumes", "/nexus-bucket"]

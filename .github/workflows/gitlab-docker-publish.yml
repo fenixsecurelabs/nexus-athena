@@ -41,7 +41,6 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ secrets.GL_REGISTRY_USERNAME }}/${{ env.IMAGE_NAME }}
-          tags: ${{ steps.meta.outputs.tags }}
 
       - name: Kaniko build
         uses: aevea/action-kaniko@master
