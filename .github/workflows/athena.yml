@@ -1,0 +1,32 @@
+name: kali-linux-workflow
+
+on:
+  push:
+    branches: 
+      - main
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Install go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.18.3
+          check-latest: true
+      - name: Install cosign
+        uses: sigstore/cosign-installer@main
+        with:
+          cosign-release: main
+      - name: Check cosign installation
+        run: cosign version
+      - name: Kaniko build
+        uses: aevea/action-kaniko@master
+        with:
+          registry: registry.gitlab.com
+          username: ${{ secrets.GL_REGISTRY_USERNAME }}
+          password: ${{ secrets.GL_REGISTRY_PASSWORD }}
+          image: cyberphxv/nexus-athena0
+          cache: true
+          cache_registry: aevea/cache
