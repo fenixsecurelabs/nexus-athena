@@ -60,4 +60,4 @@ jobs:
           cosign sign -a commit=${{ github.sha }} \
             -a "repo=https://gitlab.com/cyberphxv/nexus-athena0" \
             --key gitlab://${{ secrets.GL_REGISTRY_USERNAME }}/${{ env.IMAGE_NAME }} \
-            ${{ secrets.GL_REGISTRY_USERNAME }}/${{ env.IMAGE_NAME }}:latest.amd64 && \
+            ${{ secrets.GL_REGISTRY_USERNAME }}/${{ env.IMAGE_NAME }}:latest.amd64
