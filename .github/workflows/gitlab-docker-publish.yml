@@ -51,7 +51,7 @@ jobs:
           file: Dockerfile
           platforms: linux/amd64
           push: true
-          tags: ${{ secrets.GL_REGISTRY_USERNAME }}/${{ env.IMAGE_NAME }}:latest.amd64
+          tags: ${{ env.REGISTRY }}/${{ secrets.GL_REGISTRY_USERNAME }}/${{ env.IMAGE_NAME }}:latest.amd64
       -
         name: Build and push
         uses: docker/build-push-action@v3
@@ -60,7 +60,7 @@ jobs:
           file: Dockerfile.arm64
           platforms: linux/arm64
           push: true
-          tags: ${{ secrets.GL_REGISTRY_USERNAME }}/${{ env.IMAGE_NAME }}:latest.arm64
+          tags: ${{ env.REGISTRY }}/${{ secrets.GL_REGISTRY_USERNAME }}/${{ env.IMAGE_NAME }}:latest.arm64
       - 
         name: Sign image with a key
         if: ${{ github.event_name != 'pull_request' }}
