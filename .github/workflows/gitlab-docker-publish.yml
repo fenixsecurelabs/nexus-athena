@@ -9,6 +9,7 @@ on:
 env:
   REGISTRY: registry.gitlab.com
   IMAGE_NAME: nexus-athena0
+  TOKEN: ${{ secrets.GITLAB_TOKEN }}
 
 jobs:
   qemu:
@@ -65,11 +66,11 @@ jobs:
         name: Sign image with a key
         if: ${{ github.event_name != 'pull_request' }}
         run: |
-          cosign sign -a commit=${{ github.sha }} \
+          ${{ env.TOKEN }} cosign sign -a commit=${{ github.sha }} \
             -a "repo=https://gitlab.com/cyberphxv/nexus-athena0" \
             --key gitlab://${{ secrets.GL_REGISTRY_USERNAME }}/${{ env.IMAGE_NAME }} \
             ${{ secrets.GL_REGISTRY_USERNAME }}/${{ env.IMAGE_NAME }}:latest.amd64 && \
-          cosign sign -a commit=${{ github.sha }} \
+          ${{ env.TOKEN }} cosign sign -a commit=${{ github.sha }} \
             -a "repo=https://gitlab.com/cyberphxv/nexus-athena0" \
             --key gitlab://${{ secrets.GL_REGISTRY_USERNAME }}/${{ env.IMAGE_NAME }} \
             ${{ secrets.GL_REGISTRY_USERNAME }}/${{ env.IMAGE_NAME }}:latest.arm64
