@@ -8,7 +8,7 @@ on:
 
 env:
   REGISTRY: registry.gitlab.com
-  IMAGE_NAME: nexus-athena0
+  IMAGE_NAME: nexus-athena
   GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
 
 jobs:

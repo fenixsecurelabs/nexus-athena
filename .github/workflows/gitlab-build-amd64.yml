@@ -8,7 +8,7 @@ on:
 
 env:
   REGISTRY: registry.gitlab.com
-  IMAGE_NAME: nexus-athena0
+  IMAGE_NAME: nexus-athena
   GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
 
 jobs:
@@ -60,4 +60,4 @@ jobs:
           cosign sign -a commit=${{ github.sha }} \
             -a "repo=https://gitlab.com/cyberphxv/nexus-athena0" \
             --key gitlab://${{ secrets.GL_REGISTRY_USERNAME }}/${{ env.IMAGE_NAME }} \
-            ${{ secrets.GL_REGISTRY_USERNAME }}/${{ env.IMAGE_NAME }}:latest.amd64 && \
+            ${{ secrets.GL_REGISTRY_USERNAME }}/${{ env.IMAGE_NAME }}:latest.amd64
